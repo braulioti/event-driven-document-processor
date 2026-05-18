@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 
 from app.api.routes import router
+from app.core.exception_handlers import register_exception_handlers
+from app.core.metrics import PrometheusMiddleware
+from app.core.request_id import RequestIDMiddleware
 
 app = FastAPI(
     title="Event-Driven Document Processor",
@@ -8,6 +11,10 @@ app = FastAPI(
     version="0.1.0",
 )
 
+register_exception_handlers(app)
+
+app.add_middleware(PrometheusMiddleware)
+app.add_middleware(RequestIDMiddleware)
 app.include_router(router)
 
 
